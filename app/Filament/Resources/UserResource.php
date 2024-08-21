@@ -39,16 +39,20 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('documento')
                     ->required()
                     ->label('Documento'),
-                Forms\Components\Select::make('tipo')
-                    ->required()
-                    ->label('Tipo de conta')
-                    ->options([
-                        'A' => 'Admin',
-                        'T' => 'Titular',
-                        'S' => 'Secundario',
-                    ]),
+//                Forms\Components\Select::make('tipo')
+//                    ->required()
+//                    ->label('Tipo de conta')
+//                    ->options([
+//                        'A' => 'Admin',
+//                        'T' => 'Titular',
+//                        'S' => 'Secundario',
+//                    ]),
                 Forms\Components\DatePicker::make('data_nascimento')
-                    ->required()
+                    ->required(),
+                Forms\Components\Select::make('roles')
+                    ->multiple()
+                    ->relationship('roles', 'name')
+                    ->preload()
             ]);
     }
 
