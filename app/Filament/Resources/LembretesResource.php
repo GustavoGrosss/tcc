@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\LembretesResource\Pages;
 use App\Filament\Resources\LembretesResource\RelationManagers;
 use App\Models\Lembretes;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -42,6 +43,12 @@ class LembretesResource extends Resource
                     ->required(),
                 Forms\Components\TimePicker::make('hora')
                     ->required(),
+                Forms\Components\Select::make('destinatarios')
+                    ->relationship('destinatarios', 'name')
+                    ->options(User::all()->pluck('name', 'id'))
+                    ->multiple()
+                    ->label('Destinatários')
+                    ->required()
             ]);
     }
 

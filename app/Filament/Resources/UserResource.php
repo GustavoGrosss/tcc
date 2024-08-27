@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
+use App\Models\Role;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Resources\Form;
@@ -12,6 +13,8 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserResource extends Resource
 {
@@ -23,6 +26,16 @@ class UserResource extends Resource
 
     public static function form(Form $form): Form
     {
+//        $roles = ['Admin', 'Titular', 'Secundario'];
+//
+//        if (Auth::user()->tipo === 'T' ) {
+//            $roles = ['Titular', 'Secundario'];
+//        }
+//
+//        if (Auth::user()->tipo === 'S' ) {
+//            $roles = ['Secundario'];
+//        }
+
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
@@ -34,19 +47,13 @@ class UserResource extends Resource
                     ->label('E-mail'),
                 Forms\Components\TextInput::make('password')
                     ->password()
-                    ->required(fn (string $context):bool => $context === 'create')
+                    ->dehydrateStateUsing(fn ($state) => Hash::make($state))
+                    ->dehydrated(fn ($state) => filled($state))
+                    ->required(fn (string $context): bool => $context === 'create')
                     ->label('Senha'),
                 Forms\Components\TextInput::make('documento')
                     ->required()
                     ->label('Documento'),
-//                Forms\Components\Select::make('tipo')
-//                    ->required()
-//                    ->label('Tipo de conta')
-//                    ->options([
-//                        'A' => 'Admin',
-//                        'T' => 'Titular',
-//                        'S' => 'Secundario',
-//                    ]),
                 Forms\Components\DatePicker::make('data_nascimento')
                     ->required(),
                 Forms\Components\Select::make('roles')

@@ -18,10 +18,10 @@ class EditUser extends EditRecord
         ];
     }
 
-    protected function mutateFormDataBeforeSave(array $data): array
-    {
-        $data['password'] = Hash::make($data['password']);
-
-        return $data;
-    }
+//    protected function mutateFormDataBeforeSave(array $data): array
+//    {
+//        $data['password'] = Hash::make($data['password']);
+//
+//        return $data;
+//    }
 }

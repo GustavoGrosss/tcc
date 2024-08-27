@@ -9,7 +9,7 @@ class LembretesUsuarios extends Model
 {
     use HasFactory;
 
-    protected $table = 'lembretes';
+    protected $table = 'lembrete_usuario';
 
     protected $fillable = [
         'id_destinatario',
