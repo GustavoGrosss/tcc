@@ -13,7 +13,7 @@ class LembretesPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('lembrete_read_all');
+        return $user->hasPermissionTo('lembrete_read');
 //        return true;
     }
 

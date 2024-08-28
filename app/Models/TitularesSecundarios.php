@@ -12,12 +12,8 @@ class TitularesSecundarios extends Model
     protected $table = 'titulares_secundarios';
 
     protected $fillable = [
-        'nome',
-        'descricao',
-        'dia_semana',
-        'hora',
-        'confirmado',
-        'id_cadastrante',
+        'id_titular',
+        'id_secundario',
     ];
 
 }

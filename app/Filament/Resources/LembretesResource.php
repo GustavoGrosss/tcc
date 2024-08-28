@@ -5,6 +5,8 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\LembretesResource\Pages;
 use App\Filament\Resources\LembretesResource\RelationManagers;
 use App\Models\Lembretes;
+use App\Models\Nota;
+use App\Models\TitularesSecundarios;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Resources\Form;
@@ -13,6 +15,7 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class LembretesResource extends Resource
 {
@@ -22,6 +25,24 @@ class LembretesResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $destinatarios = User::all()->pluck('name', 'id');
+
+        if (Auth::user()->tipo === 'T' ) {
+            $relacao = TitularesSecundarios::select('id_secundario')
+                ->where('id_titular', Auth::user()->id)
+                ->get()
+                ->pluck('id_secundario')
+                ->toArray();
+
+            $relacao[] = Auth::user()->id;
+
+            $destinatarios = User::select('name', 'id')
+                ->whereIn('usuarios.id', $relacao)
+                ->orderBy('usuarios.id', 'desc')
+                ->get()
+                ->pluck('name', 'id');
+        }
+
         return $form
             ->schema([
                 Forms\Components\TextInput::make('nome')
@@ -45,11 +66,21 @@ class LembretesResource extends Resource
                     ->required(),
                 Forms\Components\Select::make('destinatarios')
                     ->relationship('destinatarios', 'name')
-                    ->options(User::all()->pluck('name', 'id'))
+                    ->options($destinatarios)
                     ->multiple()
                     ->label('Destinatários')
                     ->required()
             ]);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = Lembretes::select('lembretes.*')
+            ->join('lembrete_usuario', 'lembrete_usuario.id_lembrete', 'lembretes.id')
+            ->where('lembrete_usuario.id_destinatario', Auth::user()->id)
+            ->orderBy('lembretes.id', 'desc');
+
+        return $query;
     }
 
     public static function table(Table $table): Table

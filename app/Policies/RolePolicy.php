@@ -13,7 +13,7 @@ class RolePolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('role_read_all');
+        return $user->hasPermissionTo('role_read');
 //        return true;
     }
 

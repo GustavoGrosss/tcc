@@ -4,7 +4,9 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
+use App\Models\Lembretes;
 use App\Models\Role;
+use App\Models\TitularesSecundarios;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Resources\Form;
@@ -26,15 +28,39 @@ class UserResource extends Resource
 
     public static function form(Form $form): Form
     {
-//        $roles = ['Admin', 'Titular', 'Secundario'];
-//
-//        if (Auth::user()->tipo === 'T' ) {
-//            $roles = ['Titular', 'Secundario'];
-//        }
-//
-//        if (Auth::user()->tipo === 'S' ) {
-//            $roles = ['Secundario'];
-//        }
+        $tipos = [
+            'A' => 'Admin',
+            'T' => 'Titular',
+            'S' => 'Secundario'
+        ];
+
+        $role = [
+            'Admin',
+            'Titular',
+            'Secundario'
+        ];
+
+        if (Auth::user()->tipo === 'T' ) {
+            $tipos = [
+                'T' => 'Titular',
+                'S' => 'Secundario'
+            ];
+
+            $role = [
+                'Titular',
+                'Secundario'
+            ];
+        }
+
+        if (Auth::user()->tipo === 'S' ) {
+            $tipos = [
+                'S' => 'Secundario'
+            ];
+
+            $role = [
+                'Secundario'
+            ];
+        }
 
         return $form
             ->schema([
@@ -56,11 +82,56 @@ class UserResource extends Resource
                     ->label('Documento'),
                 Forms\Components\DatePicker::make('data_nascimento')
                     ->required(),
+                Forms\Components\Select::make('tipo')
+                    ->options($tipos)
+                    ->required(),
                 Forms\Components\Select::make('roles')
+                    ->label('Função')
                     ->multiple()
                     ->relationship('roles', 'name')
+                    ->options(Role::all()->whereIn('name', $role)->pluck('name', 'id'))
                     ->preload()
             ]);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = User::select('usuarios.*')
+            ->orderBy('usuarios.id', 'desc');
+
+        if (Auth::user()->tipo == 'T') {
+            $relacao = TitularesSecundarios::select('id_secundario')
+                ->where('id_titular', Auth::user()->id)
+                ->get()
+                ->pluck('id_secundario')
+                ->toArray();
+
+            $relacao[] = Auth::user()->id;
+
+            $query = User::select('usuarios.*')
+                ->whereIn('usuarios.id', $relacao)
+                ->orderBy('usuarios.id', 'desc');
+        }
+
+        if (Auth::user()->tipo == 'S') {
+            $titular = TitularesSecundarios::select('id_titular')
+                ->where('id_secundario', Auth::user()->id)
+                ->first();
+
+            $relacao = TitularesSecundarios::select('id_secundario')
+                ->where('id_titular', $titular->id_titular)
+                ->get()
+                ->pluck('id_secundario')
+                ->toArray();
+
+            $relacao[] = $titular->id_titular;
+
+            $query = User::select('usuarios.*')
+                ->whereIn('usuarios.id', $relacao)
+                ->orderBy('usuarios.id', 'desc');
+        }
+
+        return $query;
     }
 
     public static function table(Table $table): Table

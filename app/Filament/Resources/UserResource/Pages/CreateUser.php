@@ -13,20 +13,20 @@ class CreateUser extends CreateRecord
 {
     protected static string $resource = UserResource::class;
 
-//    protected function mutateFormDataBeforeCreate(array $data): array
-//    {
-//        $data['password'] = Hash::make($data['password']);
-//
-//        if (Auth::user()->tipo === 'A' ) {
-//            $data['tipo'] = 'T';
-//        }
-//
-//        if (Auth::user()->tipo === 'T' ) {
-//            $data['tipo'] = 'S';
-//        }
-//
-//        return $data;
-//    }
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        return $data;
+    }
 
+    protected function created($record): void
+    {
+        $currentUser = Auth::user();
 
+        if ($currentUser->tipo === 'T') {
+            TitularesSecundarios::create([
+                'id_titular'    => $currentUser->id,
+                'id_secundario' => $record->id,
+            ]);
+        }
+    }
 }

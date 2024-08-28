@@ -12,7 +12,7 @@ class UserPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('user_read_all');
+        return $user->hasPermissionTo('user_read');
 //        return true;
     }
 
