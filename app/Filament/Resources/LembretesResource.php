@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\LembretesResource\Pages;
 use App\Filament\Resources\LembretesResource\RelationManagers;
+use App\Models\DiaSemana;
 use App\Models\Lembretes;
 use App\Models\Nota;
 use App\Models\TitularesSecundarios;
@@ -52,15 +53,11 @@ class LembretesResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Select::make('dia_semana')
-                    ->options([
-                        'DOMINGO' => 'Domingo',
-                        'SEGUNDA' => 'Segunda-feira',
-                        'TERCA'   => 'Terça-feira',
-                        'QUARTA'  => 'Quarta-feira',
-                        'QUINTA'  => 'Quinta-feira',
-                        'SEXTA'   => 'Sexta-feira',
-                        'SABADO'  => 'Sábado',
-                    ])
+                    ->relationship('dia_semana', 'nome')
+                    ->options(DiaSemana::all()->pluck('nome', 'id'))
+                    ->multiple()
+                    ->preload()
+                    ->label('Dia da semana')
                     ->required(),
                 Forms\Components\TimePicker::make('hora')
                     ->required(),
@@ -75,7 +72,10 @@ class LembretesResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        $query = Lembretes::select('lembretes.*')->orderBy('lembretes.id', 'desc');
+        $query = Lembretes::select('lembretes.*', 'dia_semana.nome as dia_semana')
+            ->join('lembrete_dia_semana', 'lembrete_dia_semana.id_lembrete', 'lembretes.id')
+            ->join('dia_semana', 'dia_semana.id', 'lembrete_dia_semana.id_dia_semana')
+            ->orderBy('lembretes.id', 'desc');
 
         if (Auth::user()->tipo === 'T' ) {
             $relacao = TitularesSecundarios::select('id_secundario')
@@ -86,18 +86,22 @@ class LembretesResource extends Resource
 
             $relacao[] = Auth::user()->id;
 
-            $query = Lembretes::select('lembretes.*')
+            $query = Lembretes::select('lembretes.*', 'dia_semana.nome as dia_semana')
                 ->join('lembrete_usuario', 'lembrete_usuario.id_lembrete', 'lembretes.id')
+                ->join('lembrete_dia_semana', 'lembrete_dia_semana.id_lembrete', 'lembretes.id')
+                ->join('dia_semana', 'dia_semana.id', 'lembrete_dia_semana.id_dia_semana')
                 ->whereIn('lembrete_usuario.id_destinatario', $relacao)
-                ->groupBy('lembretes.id')
+                ->groupBy('lembretes.id', 'dia_semana.nome')
                 ->orderBy('lembretes.id', 'desc');
         }
 
         if (Auth::user()->tipo == 'S') {
-            $query = Lembretes::select('lembretes.*')
+            $query = Lembretes::select('lembretes.*', 'dia_semana.nome as dia_semana')
                 ->join('lembrete_usuario', 'lembrete_usuario.id_lembrete', 'lembretes.id')
+                ->join('lembrete_dia_semana', 'lembrete_dia_semana.id_lembrete', 'lembretes.id')
+                ->join('dia_semana', 'dia_semana.id', 'lembrete_dia_semana.id_dia_semana')
                 ->where('lembrete_usuario.id_destinatario', Auth::user()->id)
-                ->groupBy('lembretes.id')
+                ->groupBy('lembretes.id', 'dia_semana.nome')
                 ->orderBy('lembretes.id', 'desc');
         }
 

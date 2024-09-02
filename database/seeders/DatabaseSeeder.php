@@ -22,5 +22,33 @@ class DatabaseSeeder extends Seeder
              'tipo' => 'A',
              'data_nascimento' => Carbon::parse('1999-07-20'),
          ]);
+
+         \App\Models\DiaSemana::create([
+             'nome' => 'Domingo',
+         ]);
+
+        \App\Models\DiaSemana::create([
+            'nome' => 'Segunda-feira',
+        ]);
+
+        \App\Models\DiaSemana::create([
+            'nome' => 'Terça-feira',
+        ]);
+
+        \App\Models\DiaSemana::create([
+            'nome' => 'Quarta-feira',
+        ]);
+
+        \App\Models\DiaSemana::create([
+            'nome' => 'Quinta-feira',
+        ]);
+
+        \App\Models\DiaSemana::create([
+            'nome' => 'Sexta-feira',
+        ]);
+
+        \App\Models\DiaSemana::create([
+            'nome' => 'Sábado',
+        ]);
     }
 }

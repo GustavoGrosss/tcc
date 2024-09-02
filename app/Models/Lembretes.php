@@ -16,10 +16,10 @@ class Lembretes extends Model
     protected $fillable = [
         'nome',
         'descricao',
-        'dia_semana',
         'hora',
         'confirmado',
         'id_cadastrante',
+        'id_dia_semana',
     ];
 
     public function cadastrante(): BelongsTo
@@ -30,5 +30,10 @@ class Lembretes extends Model
     public function destinatarios(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'lembrete_usuario', 'id_lembrete', 'id_destinatario');
+    }
+
+    public function dia_semana(): BelongsToMany
+    {
+        return $this->belongsToMany(DiaSemana::class, 'lembrete_dia_semana', 'id_lembrete', 'id_dia_semana');
     }
 }
