@@ -31,13 +31,11 @@ class UserResource extends Resource
         $tipos = [
             'A' => 'Admin',
             'T' => 'Titular',
-            'S' => 'Secundario'
         ];
 
         $role = [
             'Admin',
             'Titular',
-            'Secundario'
         ];
 
         if (Auth::user()->tipo === 'T' ) {

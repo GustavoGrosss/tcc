@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -39,6 +40,21 @@ class User extends Authenticatable implements FilamentUser
      *
      * @var array<int, string>
      */
+
+    protected static function booted()
+    {
+        static::created(function ($user) {
+            $currentUser = Auth::user();
+
+            if ($currentUser && $currentUser->tipo === 'T') {
+                TitularesSecundarios::create([
+                    'id_titular' => $currentUser->id,
+                    'id_secundario' => $user->id,
+                ]);
+            }
+        });
+    }
+
     protected $hidden = [
         'password',
         'remember_token',

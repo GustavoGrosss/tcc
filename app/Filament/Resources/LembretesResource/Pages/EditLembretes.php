@@ -25,7 +25,6 @@ class EditLembretes extends EditRecord
         return Lembretes::query()
             ->select('lembretes.*')
             ->join('lembrete_usuario', 'lembrete_usuario.id_lembrete', 'lembretes.id')
-            ->where('lembrete_usuario.id_destinatario', Auth::user()->id)
             ->where('lembretes.id', $key)
             ->firstOrFail();
     }

@@ -75,10 +75,31 @@ class LembretesResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        $query = Lembretes::select('lembretes.*')
-            ->join('lembrete_usuario', 'lembrete_usuario.id_lembrete', 'lembretes.id')
-            ->where('lembrete_usuario.id_destinatario', Auth::user()->id)
-            ->orderBy('lembretes.id', 'desc');
+        $query = Lembretes::select('lembretes.*')->orderBy('lembretes.id', 'desc');
+
+        if (Auth::user()->tipo === 'T' ) {
+            $relacao = TitularesSecundarios::select('id_secundario')
+                ->where('id_titular', Auth::user()->id)
+                ->get()
+                ->pluck('id_secundario')
+                ->toArray();
+
+            $relacao[] = Auth::user()->id;
+
+            $query = Lembretes::select('lembretes.*')
+                ->join('lembrete_usuario', 'lembrete_usuario.id_lembrete', 'lembretes.id')
+                ->whereIn('lembrete_usuario.id_destinatario', $relacao)
+                ->groupBy('lembretes.id')
+                ->orderBy('lembretes.id', 'desc');
+        }
+
+        if (Auth::user()->tipo == 'S') {
+            $query = Lembretes::select('lembretes.*')
+                ->join('lembrete_usuario', 'lembrete_usuario.id_lembrete', 'lembretes.id')
+                ->where('lembrete_usuario.id_destinatario', Auth::user()->id)
+                ->groupBy('lembretes.id')
+                ->orderBy('lembretes.id', 'desc');
+        }
 
         return $query;
     }
