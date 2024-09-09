@@ -19,14 +19,17 @@ class PermissionResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
 
+    protected static ?string $modelLabel = 'Permissões';
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->required()
+                    ->label('Nome')
                     ->maxLength(255),
                 Forms\Components\Select::make('roles')
+                    ->label('Função')
                     ->multiple()
                     ->relationship('roles', 'name')
                     ->preload()
@@ -37,9 +40,11 @@ class PermissionResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Nome'),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime(),
+                    ->dateTime('d/m/Y H:i:s')
+                    ->label('Data Criação'),
             ])
             ->filters([])
             ->actions([

@@ -17,6 +17,7 @@ class RoleResource extends Resource
 {
     protected static ?string $model = Role::class;
 
+    protected static ?string $modelLabel = 'Funções';
     protected static ?string $navigationIcon = 'heroicon-o-collection';
 
     public static function form(Form $form): Form
@@ -25,9 +26,11 @@ class RoleResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->required()
+                    ->label('Nome')
                     ->maxLength(255),
                 Forms\Components\Select::make('permissions')
                     ->multiple()
+                    ->label('Permissões')
                     ->relationship('permissions', 'name')
                     ->preload()
             ]);
@@ -37,9 +40,11 @@ class RoleResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Nome'),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime(),
+                    ->label('Data Criação')
+                    ->dateTime('d/m/Y H:i:s'),
             ])
             ->filters([
                 //
