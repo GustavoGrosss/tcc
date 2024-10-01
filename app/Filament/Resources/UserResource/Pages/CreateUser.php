@@ -31,7 +31,7 @@ class CreateUser extends CreateRecord
 //        if ($currentUser->tipo === 'T') {
             // Criar a relação após o usuário ter sido salvo no banco de dados
             TitularesSecundarios::create([
-                'id_titular' => $currentUser->id,
+                'id_titular'    => $currentUser->id,
                 'id_secundario' => $this->record->id,
             ]);
 //        }

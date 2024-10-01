@@ -20,10 +20,10 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        User::class       => UserPolicy::class,
-        Permission::class => PermissionPolicy::class,
-        Lembretes::class  => LembretesPolicy::class,
-        Role::class       => RolePolicy::class,
+//        User::class       => UserPolicy::class,
+//        Permission::class => PermissionPolicy::class,
+//        Lembretes::class  => LembretesPolicy::class,
+//        Role::class       => RolePolicy::class,
     ];
 
     /**

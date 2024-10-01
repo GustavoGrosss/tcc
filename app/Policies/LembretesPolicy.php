@@ -13,8 +13,8 @@ class LembretesPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('lembrete_read');
-//        return true;
+//        return $user->hasPermissionTo('lembrete_read');
+        return true;
     }
 
     /**
@@ -22,8 +22,8 @@ class LembretesPolicy
      */
     public function view(User $user, Lembretes $lembretes): bool
     {
-        return $user->hasPermissionTo('lembrete_read');
-//        return true;
+//        return $user->hasPermissionTo('lembrete_read');
+        return true;
     }
 
     /**
@@ -31,8 +31,8 @@ class LembretesPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('lembrete_create');
-//        return true;
+//        return $user->hasPermissionTo('lembrete_create');
+        return true;
     }
 
     /**
@@ -40,8 +40,8 @@ class LembretesPolicy
      */
     public function update(User $user, Lembretes $lembretes): bool
     {
-        return $user->hasPermissionTo('lembrete_update');
-//        return true;
+//        return $user->hasPermissionTo('lembrete_update');
+        return true;
     }
 
     /**
@@ -49,8 +49,8 @@ class LembretesPolicy
      */
     public function delete(User $user, Lembretes $lembretes): bool
     {
-        return $user->hasPermissionTo('lembrete_delete');
-//        return true;
+//        return $user->hasPermissionTo('lembrete_delete');
+        return true;
     }
 
 }

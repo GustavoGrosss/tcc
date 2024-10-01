@@ -19,8 +19,8 @@ class PermissionPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->hasPermissionTo('permission_read');
-//        return true;
+//        return $user->hasPermissionTo('permission_read');
+        return true;
     }
 
     /**
@@ -32,8 +32,8 @@ class PermissionPolicy
      */
     public function view(User $user, Permission $permission)
     {
-        return $user->hasPermissionTo('permission_read');
-//        return true;
+//        return $user->hasPermissionTo('permission_read');
+        return true;
     }
 
     /**
@@ -44,8 +44,8 @@ class PermissionPolicy
      */
     public function create(User $user)
     {
-        return $user->hasPermissionTo('permission_create');
-//        return true;
+//        return $user->hasPermissionTo('permission_create');
+        return true;
     }
 
     /**
@@ -57,8 +57,8 @@ class PermissionPolicy
      */
     public function update(User $user, Permission $permission)
     {
-        return $user->hasPermissionTo('permission_update');
-//        return true;
+//        return $user->hasPermissionTo('permission_update');
+        return true;
     }
 
     /**
@@ -70,8 +70,8 @@ class PermissionPolicy
      */
     public function delete(User $user, Permission $permission)
     {
-        return $user->hasPermissionTo('permission_delete');
-//        return true;
+//        return $user->hasPermissionTo('permission_delete');
+        return true;
     }
 
 

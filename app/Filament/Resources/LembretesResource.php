@@ -3,10 +3,8 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\LembretesResource\Pages;
-use App\Filament\Resources\LembretesResource\RelationManagers;
 use App\Models\DiaSemana;
 use App\Models\Lembretes;
-use App\Models\Nota;
 use App\Models\TitularesSecundarios;
 use App\Models\User;
 use Filament\Forms;
@@ -15,7 +13,6 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
 
 class LembretesResource extends Resource
@@ -38,8 +35,8 @@ class LembretesResource extends Resource
             $relacao[] = Auth::user()->id;
 
             $destinatarios = User::select('name', 'id')
-                ->whereIn('usuarios.id', $relacao)
-                ->orderBy('usuarios.id', 'desc')
+                ->whereIn('id', $relacao)
+                ->orderBy('id', 'desc')
                 ->get()
                 ->pluck('name', 'id');
         }

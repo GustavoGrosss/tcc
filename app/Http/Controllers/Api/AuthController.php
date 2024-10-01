@@ -16,30 +16,35 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $credentials = $request->only(['email', 'password']);
+        try {
+            $credentials = $request->only(['email', 'password']);
 
-        if (!$token = auth('api')->attempt($credentials)) {
+            if (!$token = auth('api')->attempt($credentials)) {
+                return response()->json([
+                    'status'  => 'error',
+                    'message' => 'Credenciais inválidas, favor tentar novamente ou clique em esqueci minha senha'
+                ], 401);
+            }
+
+            $user = User::select()
+                ->where('email', $request->email)
+                ->first();
+
+//        $lembretes = (new LembreteController)->lembretesSemana();
+
             return response()->json([
-                'status'  => 'error',
-                'message' => 'Credenciais inválidas, favor tentar novamente ou clique em esqueci minha senha'
-            ], 401);
+                'status'       => 'sucess',
+                'message'      => 'Login efetuado com sucesso.',
+                'data'         => [
+                    'access_token' => $token,
+                    'usuario'   => $user,
+//                'lembretes' => $lembretes
+                ],
+            ]);
+
+        } catch (\Exception $exception) {
+            dd($exception->getMessage());
         }
-
-        $user = User::select()
-            ->where('email', $request->email)
-            ->first();
-
-        $lembretes = (new LembreteController)->lembretesSemana();
-
-        return response()->json([
-            'status'       => 'sucess',
-            'message'      => 'Login efetuado com sucesso.',
-            'access_token' => $token,
-            'data'         => [
-                'usuario'   => $user,
-                'lembretes' => $lembretes
-            ],
-        ]);
     }
 
     /**
