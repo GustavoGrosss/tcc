@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Lembretes;
+use App\Models\TitularesSecundarios;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
@@ -30,15 +32,25 @@ class AuthController extends Controller
                 ->where('email', $request->email)
                 ->first();
 
-//        $lembretes = (new LembreteController)->lembretesSemana();
+            $lembretes = (new LembreteController)->processarNotificacoes((new LembreteController)->lembretesSemana());
+
+            $secundarios = [];
+
+//            if ($user->tipo == 'T') {
+                $secundarios = TitularesSecundarios::select('usuarios.id', 'usuarios.name')
+                    ->join('usuarios', 'usuarios.id', 'titulares_secundarios.id_secundario')
+                    ->where('titulares_secundarios.id_titular', 4)
+                    ->get();
+//            }
 
             return response()->json([
                 'status'       => 'sucess',
                 'message'      => 'Login efetuado com sucesso.',
                 'data'         => [
                     'access_token' => $token,
-                    'usuario'   => $user,
-//                'lembretes' => $lembretes
+                    'usuario'      => $user,
+                    'lembretes'    => $lembretes,
+                    'secundarios'  => $secundarios
                 ],
             ]);
 
@@ -59,12 +71,6 @@ class AuthController extends Controller
         return response()->json([
             'status'  => 'sucess',
             'message' => 'Logout realizado com sucesso'
-        ]);
-    }
-
-    public function teste(){
-        return response()->json([
-            'data' => User::all(),
         ]);
     }
 }

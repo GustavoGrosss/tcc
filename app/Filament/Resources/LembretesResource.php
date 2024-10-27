@@ -19,7 +19,7 @@ class LembretesResource extends Resource
 {
     protected static ?string $model = Lembretes::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-bell';
 
     public static function form(Form $form): Form
     {
